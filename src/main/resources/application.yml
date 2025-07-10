@@ -1,0 +1,10 @@
+server:
+  port: 8890
+spring:
+  profiles:
+    active: dev
+mybatis:
+  mapper-locations: classpath:mapper/*.xml # 指定xml路径
+  type-aliases-package: cn.xiangstudy.generalproject.pojo # 实体包别名; 在xml文件中不用写全路径
+  configuration:
+    map-underscore-to-camel-case: true # 开启下划线转驼峰; 无需再使用resultMap来进行返回结果的转换
