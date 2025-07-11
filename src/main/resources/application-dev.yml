@@ -4,6 +4,13 @@ spring:
     username: root
     password:
     driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host:
+      port: 6379
+      password:
+      database: 0
+      timeout: 1000
 mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

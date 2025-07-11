@@ -4,6 +4,13 @@ spring:
     username:
     password:
     driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host:
+      port: 6379
+      password:
+      database: 0
+      timeout: 2000
 springdoc:
   api-docs:
     enabled: false
