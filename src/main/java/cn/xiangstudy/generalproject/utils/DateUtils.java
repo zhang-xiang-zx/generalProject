@@ -1,6 +1,9 @@
 package cn.xiangstudy.generalproject.utils;
 
 import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -143,8 +146,47 @@ public class DateUtils {
      * @return java.util.Date
      */
     public static Date datePlusMinute(Date date, int minute){
-        LocalDateTime localDateTime = dateToLocalDateTime(date).plusMinutes(minute);
-        return localDateTimeToDate(localDateTime);
+        ZonedDateTime zonedDateTime = date.toInstant().atZone(ZoneId.systemDefault()).plusMinutes(minute);
+        return Date.from(zonedDateTime.toInstant());
+    }
+
+    /**
+     * 日期减去分钟
+     * @author zhangxiang
+     * @date 2025/7/14 09:33
+     * @param date
+     * @param minute
+     * @return java.util.Date
+     */
+    public static Date dateMinusMinute(Date date, int minute){
+        ZonedDateTime zonedDateTime = date.toInstant().atZone(ZoneId.systemDefault()).minusMinutes(minute);
+        return Date.from(zonedDateTime.toInstant());
+    }
+
+    /**
+     * 日期增加秒
+     * @author zhangxiang
+     * @date 2025/7/14 09:35
+     * @param date
+     * @param second
+     * @return java.util.Date
+     */
+    public static Date datePlusSecond(Date date, int second){
+        Instant instant = date.toInstant().plusSeconds(second);
+        return Date.from(instant);
+    }
+
+    /**
+     * 日期减去秒
+     * @author zhangxiang
+     * @date 2025/7/14 09:36
+     * @param date
+     * @param second
+     * @return java.util.Date
+     */
+    public static Date dateMinusSecond(Date date, int second){
+        Instant instant = date.toInstant().minusSeconds(second);
+        return Date.from(instant);
     }
 
     /**
@@ -259,5 +301,36 @@ public class DateUtils {
         return result;
     }
 
+    /**
+     * 字符串日期 转 date
+     * @author zhangxiang
+     * @date 2025/7/14 08:53
+     * @param str   2025-07-14 12:00:00
+     * @param format  yyyy-MM-dd HH:mm:ss
+     * @return java.util.Date
+     */
+    public static Date strToDate(String str, String format){
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(format);
+        TemporalAccessor parse = dateTimeFormatter.parse(str);
+
+        LocalDateTime from = LocalDateTime.from(parse);
+        return localDateTimeToDate(from);
+
+    }
+
+    /**
+     * date 转 str
+     * @author zhangxiang
+     * @date 2025/7/14 09:21
+     * @param date
+     * @param format yyyy-MM-dd HH:mm:ss;yyyy-MM-dd
+     * @return java.lang.String
+     */
+    public static String dateToStr(Date date, String format){
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(format);
+        LocalDateTime localDate = dateToLocalDateTime(date);
+        return localDate.format(dateTimeFormatter);
+    }
 
 }
