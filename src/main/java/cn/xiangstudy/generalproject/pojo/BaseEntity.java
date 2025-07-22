@@ -16,7 +16,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class BaseEntity implements Serializable {
+public class BaseEntity {
 
     private Date createTime;
 
