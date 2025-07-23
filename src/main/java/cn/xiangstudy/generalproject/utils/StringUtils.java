@@ -3,7 +3,9 @@ package cn.xiangstudy.generalproject.utils;
 import com.alibaba.fastjson2.JSON;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -120,7 +122,7 @@ public class StringUtils {
      * @author zhangxiang
      * @date 2025/7/22 15:26
      * @param phone
-     * @return boolean
+     * @return boolean true:符合, false:不符合
      */
     public static boolean checkPhone(String phone) {
         boolean flag = false;
@@ -139,7 +141,7 @@ public class StringUtils {
      * @author zhangxiang
      * @date 2025/7/22 15:59
      * @param nickname
-     * @return boolean
+     * @return boolean true:符合, false:不符合
      */
     public static boolean checkNickname(String nickname) {
         boolean flag = false;
@@ -156,7 +158,7 @@ public class StringUtils {
      * @author zhangxiang
      * @date 2025/7/22 16:06
      * @param password
-     * @return boolean
+     * @return boolean true:符合, false:不符合
      */
     public static boolean checkPassword(String password) {
         boolean flag = false;
@@ -167,6 +169,16 @@ public class StringUtils {
         }
 
         return flag;
+    }
+
+    public static List<String> generateAccount(Long initialValue, Integer size){
+        List<String> result = new ArrayList<>();
+
+        for (int i = 0; i < size; i++) {
+            result.add(String.valueOf(initialValue++));
+        }
+
+        return result;
     }
 
 }
