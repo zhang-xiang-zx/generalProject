@@ -14,3 +14,6 @@ spring:
 mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+my:
+  tokenExpireTime: 2 # 天

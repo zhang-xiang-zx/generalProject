@@ -259,7 +259,7 @@ public class DateUtils {
     }
 
     /**
-     * 两个时间的差值(毫秒)
+     * 两个时间的差值(毫秒), start时间比end时间晚得出来的是正数，反之为负数
      * @author zhangxiang
      * @date 2025/7/11 17:11
      * @param startDate

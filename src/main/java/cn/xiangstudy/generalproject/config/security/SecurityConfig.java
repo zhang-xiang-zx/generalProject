@@ -2,7 +2,6 @@ package cn.xiangstudy.generalproject.config.security;
 
 import cn.xiangstudy.generalproject.config.request.TokenFilter;
 import cn.xiangstudy.generalproject.config.response.JsonAuthenticationEntryPoint;
-import cn.xiangstudy.generalproject.service.UserTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
@@ -27,13 +26,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 })
 public class SecurityConfig {
 
-    private final UserTokenService userTokenService;
-
     private final JsonAuthenticationEntryPoint entryPoint;
 
     @Autowired
-    public SecurityConfig(UserTokenService userTokenService, JsonAuthenticationEntryPoint entryPoint) {
-        this.userTokenService = userTokenService;
+    public SecurityConfig(JsonAuthenticationEntryPoint entryPoint) {
         this.entryPoint = entryPoint;
     }
 
@@ -51,6 +47,6 @@ public class SecurityConfig {
     // 自定义token验证过滤器
     @Bean
     public TokenFilter tokenFilter(){
-        return new TokenFilter(userTokenService, entryPoint);
+        return new TokenFilter(entryPoint);
     }
 }

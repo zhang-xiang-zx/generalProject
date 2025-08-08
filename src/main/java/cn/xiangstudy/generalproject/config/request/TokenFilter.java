@@ -2,17 +2,22 @@ package cn.xiangstudy.generalproject.config.request;
 
 import cn.xiangstudy.generalproject.config.response.BusinessException;
 import cn.xiangstudy.generalproject.config.response.JsonAuthenticationEntryPoint;
+import cn.xiangstudy.generalproject.pojo.MyTokenAuthentication;
 import cn.xiangstudy.generalproject.pojo.entity.SysToken;
 import cn.xiangstudy.generalproject.service.UserTokenService;
+import cn.xiangstudy.generalproject.utils.DateUtils;
+import cn.xiangstudy.generalproject.utils.StringUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * @author zhangxiang
@@ -21,30 +26,44 @@ import java.io.IOException;
 @Slf4j
 public class TokenFilter extends OncePerRequestFilter {
 
-    private final UserTokenService userTokenService;
-
     private final JsonAuthenticationEntryPoint entryPoint;
 
-    public TokenFilter(UserTokenService userTokenService, JsonAuthenticationEntryPoint entryPoint) {
-        this.userTokenService = userTokenService;
+    public TokenFilter(JsonAuthenticationEntryPoint entryPoint) {
         this.entryPoint = entryPoint;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        log.info("进到拦截");
 
         String token = request.getHeader("token");
 
         try{
             if (token == null) {
-                throw new BusinessException(401, "token 账号或密码出错");
+                throw new BusinessException(401, "header no token");
+            }else{
+
+                // 解密token, 获取信息
+                SysToken sysToken = StringUtils.decodeToken(token);
+
+                if (sysToken == null) {
+                    throw new BusinessException(401, "encode no token");
+                }
+
+                Date expireTime = sysToken.getExpireTime();
+                Date nowDateTime = DateUtils.nowDate();
+
+                Long cha = DateUtils.differenceTime(nowDateTime, expireTime);
+
+                if(cha >= 0){
+                    throw new BusinessException(401, "token expired");
+                }
+
+                // 告诉spring security当前请求已经认证过了, 并且是谁在访问, 否则Spring Security 还是会认为当前请求是“匿名用户”，就会返回 401/403。
+                MyTokenAuthentication userAuthentication = MyTokenAuthentication.builder()
+                        .userId(sysToken.getUserId())
+                        .isSuccess(true).build();
+                SecurityContextHolder.getContext().setAuthentication(userAuthentication);
             }
-
-            // 查找token是否存在
-            SysToken sysToken = userTokenService.selectUserTokenByToken(token);
-
-
             filterChain.doFilter(request, response);
         }catch (BusinessException e){
             request.setAttribute("SPRING_SECURITY_LAST_EXCEPTION", e);
@@ -77,7 +96,9 @@ public class TokenFilter extends OncePerRequestFilter {
                 || uri.startsWith("/webjars/")                     // Swagger 依赖的 JS/CSS
                 || uri.equals("/doc.html")                         // Knife4j 文档页面
                 || uri.contains("favicon")                         // favicon.ico 及其他图标
-                || uri.startsWith("/.well-known");                  // Let's Encrypt 等认证路径
+                || uri.startsWith("/.well-known")                  // Let's Encrypt 等认证路径
+                || uri.startsWith("/mgr/userOperation/register") // 注册接口
+                || uri.startsWith("/mgr/userOperation/login"); // 登录接口
     }
 
 }

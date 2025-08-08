@@ -64,7 +64,6 @@ public class GlobalResponse implements ResponseBodyAdvice<Object> {
         }
 
         if(returnType.getParameterType().equals(Result.class)){
-            log.info("进到result这里");
             isNeedProcess = false;
         }
 
@@ -74,8 +73,6 @@ public class GlobalResponse implements ResponseBodyAdvice<Object> {
         if (requestURI.startsWith("/v3/api-docs") || requestURI.startsWith("/webjars")) {
             isNeedProcess = false;
         }
-
-        log.info("查看最终是否处理返回值：{}", isNeedProcess);
 
         return isNeedProcess;
     }

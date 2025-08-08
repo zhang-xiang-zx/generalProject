@@ -16,3 +16,6 @@ springdoc:
     enabled: false
   swagger-ui:
     enabled: false
+
+my:
+  tokenExpireTime: 1 # 天

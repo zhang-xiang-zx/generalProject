@@ -256,9 +256,26 @@ public class StringUtils {
         return reverse + tokenSlat;
     }
 
-    public static void main(String[] args) {
-        String s = encodeToken("abcdefg");
-        System.out.println(s);
+    /**
+     * 解密token
+     * @author zhangxiang
+     * @date 2025/8/8 14:42
+     * @param token
+     * @return cn.xiangstudy.generalproject.pojo.entity.SysToken
+     */
+    public static SysToken decodeToken(String token){
+
+        String sourceToken = token.substring(0, Math.max(0, token.length() - SysConst.TOKEN_SLAT_NUM));
+        String reverse = new StringBuilder(sourceToken).reverse().toString();
+        SysToken sysToken = null;
+        try{
+            String tokenStr = decoderByBase64(reverse);
+            sysToken = JSON.parseObject(tokenStr, SysToken.class);
+        }catch (Exception e){
+            e.getMessage();
+        }
+
+        return sysToken;
     }
 
 }

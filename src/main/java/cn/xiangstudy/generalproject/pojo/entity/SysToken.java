@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.Date;
+
 /**
  * 存储数据库中的信息
  * @author zhangxiang
@@ -24,5 +26,7 @@ public class SysToken extends BaseEntity {
     private Long userId;
 
     private String token;
+
+    private Date expireTime;
 
 }
