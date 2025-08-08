@@ -1,6 +1,9 @@
 package cn.xiangstudy.generalproject.config.security;
 
 import cn.xiangstudy.generalproject.config.request.TokenFilter;
+import cn.xiangstudy.generalproject.config.response.JsonAuthenticationEntryPoint;
+import cn.xiangstudy.generalproject.service.UserTokenService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
@@ -24,14 +27,23 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 })
 public class SecurityConfig {
 
+    private final UserTokenService userTokenService;
+
+    private final JsonAuthenticationEntryPoint entryPoint;
+
+    @Autowired
+    public SecurityConfig(UserTokenService userTokenService, JsonAuthenticationEntryPoint entryPoint) {
+        this.userTokenService = userTokenService;
+        this.entryPoint = entryPoint;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // 禁用csrf
-                .csrf(csrf -> csrf.disable())
-                // 设置无状态会话
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(tokenFilter(),UsernamePasswordAuthenticationFilter.class);
+                .csrf(csrf -> csrf.disable()) // 禁用csrf
+                .formLogin(form -> form.disable()) // 强烈推荐明确禁用表单登录
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 设置无状态会话
+                .addFilterBefore(tokenFilter(),UsernamePasswordAuthenticationFilter.class); // 自定义过滤器
 
         return http.build();
     }
@@ -39,6 +51,6 @@ public class SecurityConfig {
     // 自定义token验证过滤器
     @Bean
     public TokenFilter tokenFilter(){
-        return new TokenFilter();
+        return new TokenFilter(userTokenService, entryPoint);
     }
 }
