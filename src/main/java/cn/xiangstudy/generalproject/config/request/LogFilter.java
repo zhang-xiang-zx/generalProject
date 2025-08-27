@@ -57,6 +57,16 @@ public class LogFilter extends OncePerRequestFilter {
         //日志存放在上下文中
         LogContext.set(logInfo);
 
+        // 登录时存储客户端请求IP，方便登录成功记录
+        if(request.getRequestURI().contains("/login")){
+
+            MyTokenAuthentication info = MyTokenAuthentication.builder()
+                    .ipAddress(clientIP)
+                    .build();
+
+            SecurityContextHolder.getContext().setAuthentication(info);
+        }
+
         filterChain.doFilter(request, response);
     }
 

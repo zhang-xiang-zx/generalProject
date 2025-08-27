@@ -4,7 +4,6 @@ import cn.xiangstudy.generalproject.config.response.BusinessException;
 import cn.xiangstudy.generalproject.config.response.JsonAuthenticationEntryPoint;
 import cn.xiangstudy.generalproject.pojo.MyTokenAuthentication;
 import cn.xiangstudy.generalproject.pojo.entity.SysToken;
-import cn.xiangstudy.generalproject.service.UserTokenService;
 import cn.xiangstudy.generalproject.utils.DateUtils;
 import cn.xiangstudy.generalproject.utils.StringUtils;
 import jakarta.servlet.FilterChain;
@@ -61,7 +60,8 @@ public class TokenFilter extends OncePerRequestFilter {
                 // 告诉spring security当前请求已经认证过了, 并且是谁在访问, 否则Spring Security 还是会认为当前请求是“匿名用户”，就会返回 401/403。
                 MyTokenAuthentication userAuthentication = MyTokenAuthentication.builder()
                         .userId(sysToken.getUserId())
-                        .isSuccess(true).build();
+                        .userOk(true).build();
+
                 SecurityContextHolder.getContext().setAuthentication(userAuthentication);
             }
             filterChain.doFilter(request, response);

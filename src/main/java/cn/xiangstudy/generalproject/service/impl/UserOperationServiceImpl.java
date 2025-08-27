@@ -4,16 +4,21 @@ import cn.xiangstudy.generalproject.component.user.UserAccountPool;
 import cn.xiangstudy.generalproject.config.constant.SysConst;
 import cn.xiangstudy.generalproject.config.response.BusinessException;
 import cn.xiangstudy.generalproject.mapper.UserMapper;
+import cn.xiangstudy.generalproject.pojo.MyTokenAuthentication;
 import cn.xiangstudy.generalproject.pojo.dto.UserLoginDTO;
 import cn.xiangstudy.generalproject.pojo.dto.UserRegisterDTO;
+import cn.xiangstudy.generalproject.pojo.entity.SysLoginLog;
 import cn.xiangstudy.generalproject.pojo.entity.SysToken;
 import cn.xiangstudy.generalproject.pojo.entity.User;
+import cn.xiangstudy.generalproject.service.SysLoginLogService;
 import cn.xiangstudy.generalproject.service.UserOperationService;
 import cn.xiangstudy.generalproject.utils.DateUtils;
 import cn.xiangstudy.generalproject.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -33,10 +38,13 @@ public class UserOperationServiceImpl implements UserOperationService {
     @Value("${my.tokenExpireTime}")
     private int tokenExpire;
 
+    private final SysLoginLogService sysLoginLogService;
+
     @Autowired
-    public UserOperationServiceImpl(UserAccountPool userAccountPool, UserMapper userMapper) {
+    public UserOperationServiceImpl(UserAccountPool userAccountPool, UserMapper userMapper, SysLoginLogService sysLoginLogService) {
         this.userAccountPool = userAccountPool;
         this.userMapper = userMapper;
+        this.sysLoginLogService = sysLoginLogService;
     }
 
     @Override
@@ -115,6 +123,17 @@ public class UserOperationServiceImpl implements UserOperationService {
                 .expireTime(expireTime)
                 .createTime(nowTime).build();
         String token = StringUtils.encoderByBase64(userInfo);
+
+        // 记录登录IP信息
+        String ipAddress = (String) SecurityContextHolder.getContext().getAuthentication().getDetails();
+
+        SysLoginLog loginLogInfo = SysLoginLog.builder()
+                .userId(user.getUserId())
+                .loginIp(ipAddress)
+                .build();
+
+        sysLoginLogService.createUserLoginLog(loginLogInfo);
+
         return StringUtils.encodeToken(token);
     }
 }

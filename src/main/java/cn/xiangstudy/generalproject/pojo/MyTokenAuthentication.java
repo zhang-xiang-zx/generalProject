@@ -20,7 +20,9 @@ public class MyTokenAuthentication implements Authentication {
 
     private Long userId;
 
-    private boolean isSuccess;
+    private String ipAddress;
+
+    private boolean userOk;
 
     // 授权决策时获取用户的权限/角色
     @Override
@@ -37,7 +39,7 @@ public class MyTokenAuthentication implements Authentication {
     // 可能包含IP、会话ID等额外信息
     @Override
     public Object getDetails() {
-        return null;
+        return ipAddress;
     }
 
     // 返回用户身份标识（用户名/用户对象）
@@ -49,7 +51,7 @@ public class MyTokenAuthentication implements Authentication {
     // 判断是否认证
     @Override
     public boolean isAuthenticated() {
-        return isSuccess;
+        return userOk;
     }
 
     // 由AuthenticationManager设置认证状态
