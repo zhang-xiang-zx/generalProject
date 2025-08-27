@@ -1,4 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.xiangstudy.generalproject.mapper.UserMapper">
+
+    <sql id="selectAll">
+        select user_id, nickname, account, password, phone, status, create_time, remark from sys_user
+    </sql>
+
+    <select id="selectMaxUserAccount" resultType="string">
+        select max(cast(account as unsigned)) as max_account from sys_user where del_flag = 0
+    </select>
+
+    <insert id="createUser" parameterType="user">
+        insert into sys_user (nickname, account, password, status, phone, del_flag, create_time, remark)
+        values (#{nickname}, #{account}, #{password}, #{status}, #{phone}, #{delFlag}, #{createTime}, #{remark})
+    </insert>
+
+    <select id="selectAllUsers" resultType="userVO">
+        select user_id, nickname, account, phone, status, create_time, remark from sys_user where del_flag = 0
+        <if test="keyword != null and !keyword.isEmpty">
+            and nickname like concat('%',#{keyword},'%')
+        </if>
+    </select>
+
+    <select id="selectUserByPhone" resultType="user">
+        <include refid="selectAll"/>
+        where del_flag = 0
+        <if test="phone != null and !phone.isEmpty">
+            and phone = #{phone}
+        </if>
+    </select>
+
+    <select id="selectUserByNickname" resultType="user">
+        <include refid="selectAll"/>
+        where del_flag = 0
+        <if test="nickname != null and !nickname.isEmpty">
+            and nickname = #{nickname}
+        </if>
+    </select>
+
+    <select id="selectUserLogin" resultType="user">
+        <include refid="selectAll"/> where del_flag = 0 and (account = #{account} or phone = #{account})
+    </select>
 </mapper>

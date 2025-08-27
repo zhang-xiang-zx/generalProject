@@ -1,6 +1,8 @@
 package cn.xiangstudy.generalproject.pojo;
 
+import cn.xiangstudy.generalproject.config.constant.SysConst;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -18,9 +20,11 @@ import java.util.Date;
 @SuperBuilder
 public class BaseEntity {
 
-    private Date createTime;
+    @Builder.Default
+    private Date createTime = new Date();
 
-    private Integer delFlag;
+    @Builder.Default
+    private Integer delFlag = SysConst.DEL_FLAG_FALSE;
 
     private String remark;
 }

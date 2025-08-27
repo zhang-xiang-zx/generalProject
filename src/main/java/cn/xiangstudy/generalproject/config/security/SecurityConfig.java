@@ -1,5 +1,6 @@
 package cn.xiangstudy.generalproject.config.security;
 
+import cn.xiangstudy.generalproject.config.request.LogFilter;
 import cn.xiangstudy.generalproject.config.request.TokenFilter;
 import cn.xiangstudy.generalproject.config.response.JsonAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ public class SecurityConfig {
 
     private final JsonAuthenticationEntryPoint entryPoint;
 
+
     @Autowired
     public SecurityConfig(JsonAuthenticationEntryPoint entryPoint) {
         this.entryPoint = entryPoint;
@@ -39,7 +41,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // 禁用csrf
                 .formLogin(form -> form.disable()) // 强烈推荐明确禁用表单登录
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 设置无状态会话
-                .addFilterBefore(tokenFilter(),UsernamePasswordAuthenticationFilter.class); // 自定义过滤器
+                .addFilterBefore(tokenFilter(),UsernamePasswordAuthenticationFilter.class) // 自定义token过滤器
+                .addFilterBefore(logFilter(), TokenFilter.class); // 拦截日志
+
 
         return http.build();
     }
@@ -48,5 +52,11 @@ public class SecurityConfig {
     @Bean
     public TokenFilter tokenFilter(){
         return new TokenFilter(entryPoint);
+    }
+
+    // 记录拦截日志
+    @Bean
+    public LogFilter logFilter(){
+        return new LogFilter();
     }
 }

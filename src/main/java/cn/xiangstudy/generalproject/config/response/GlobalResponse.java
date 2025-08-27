@@ -1,7 +1,12 @@
 package cn.xiangstudy.generalproject.config.response;
 
+import cn.xiangstudy.generalproject.config.constant.SysConst;
+import cn.xiangstudy.generalproject.pojo.LogContext;
+import cn.xiangstudy.generalproject.pojo.entity.SysLog;
+import cn.xiangstudy.generalproject.service.SysLogService;
 import com.alibaba.fastjson2.JSON;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +29,13 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 @RestControllerAdvice
 public class GlobalResponse implements ResponseBodyAdvice<Object> {
 
+    private final SysLogService sysLogService;
+
+    @Autowired
+    public GlobalResponse(SysLogService sysLogService) {
+        this.sysLogService = sysLogService;
+    }
+
     /**
      * 处理业务上的异常
      *
@@ -35,12 +47,38 @@ public class GlobalResponse implements ResponseBodyAdvice<Object> {
     @ExceptionHandler(BusinessException.class)
     public Result<Void> businessException(BusinessException e) {
         log.info("自定义异常：{}", e.getMessage());
+
+        // 获取日志信息
+        SysLog sysLog = LogContext.get();
+        if (sysLog != null) {
+            sysLog.setIsSuccess(SysConst.LOG_REQUEST_ERROR);
+            sysLog.setErrorMsg(e.getMessage());
+
+            //添加日志
+            sysLogService.createLog(sysLog);
+
+            LogContext.remove();
+        }
+
         return Result.fail(e.getCode(), e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
     public Result<Void> exception(Exception e) {
         log.info("系统异常：{}", e.getMessage());
+
+        // 获取日志信息
+        SysLog sysLog = LogContext.get();
+        if (sysLog != null) {
+            sysLog.setIsSuccess(SysConst.LOG_REQUEST_ERROR);
+            sysLog.setErrorMsg(e.getMessage());
+
+            //添加日志
+            sysLogService.createLog(sysLog);
+
+            LogContext.remove();
+        }
+
         return Result.fail(500, "系统异常");
     }
 
@@ -72,6 +110,17 @@ public class GlobalResponse implements ResponseBodyAdvice<Object> {
         String requestURI = requestAttributes.getRequest().getRequestURI();
         if (requestURI.startsWith("/v3/api-docs") || requestURI.startsWith("/webjars")) {
             isNeedProcess = false;
+        }
+
+        // 获取日志信息
+        SysLog sysLog = LogContext.get();
+        if (sysLog != null) {
+            sysLog.setIsSuccess(SysConst.LOG_REQUEST_SUCCESS);
+
+            //添加日志
+            sysLogService.createLog(sysLog);
+
+            LogContext.remove();
         }
 
         return isNeedProcess;

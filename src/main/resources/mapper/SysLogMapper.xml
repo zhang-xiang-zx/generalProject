@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.xiangstudy.generalproject.mapper.SysLogMapper">
+
+    <insert id="createLog" parameterType="sysLog" useGeneratedKeys="true" keyProperty="logId">
+        insert into sys_log (ip, request_uri, user_id, type,is_success, error_msg, create_time, del_flag, remark)
+        values (#{ip}, #{requestUri}, #{userId}, #{type}, #{isSuccess}, #{errorMsg}, #{createTime}, #{delFlag}, #{remark})
+    </insert>
+</mapper>

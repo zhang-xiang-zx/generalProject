@@ -36,4 +36,14 @@ public class SysConst {
      * token加密盐值个数
      */
     public static final int TOKEN_SLAT_NUM  = 10;
+
+    /**
+     * 日志请求接口成功
+     */
+    public static final int LOG_REQUEST_SUCCESS = 1;
+
+    /**
+     * 日志请求接口失败
+     */
+    public static final int LOG_REQUEST_ERROR = 0;
 }
