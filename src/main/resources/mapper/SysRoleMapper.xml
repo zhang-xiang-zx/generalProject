@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.xiangstudy.generalproject.mapper.SysRoleMapper">
+
+    <insert id="createRole">
+        insert into sys_role (role_name, role_key, del_flag, create_time, remark)
+        values (#{roleName}, #{roleKey}, #{delFlag}, #{createTime}, #{remark})
+    </insert>
+
+    <update id="updateRole">
+        update sys_role set
+        <set>
+            <if test="roleName != null and roleName != ''">
+                role_name = #{roleName},
+            </if>
+            <if test="roleKey != null and roleKey != ''">
+                role_key = #{roleKey},
+            </if>
+        </set>
+        where role_id = #{roleId}
+    </update>
+
+
+</mapper>

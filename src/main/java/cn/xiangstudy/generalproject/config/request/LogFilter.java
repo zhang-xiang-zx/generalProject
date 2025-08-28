@@ -1,6 +1,7 @@
 package cn.xiangstudy.generalproject.config.request;
 
 import cn.xiangstudy.generalproject.pojo.LogContext;
+import cn.xiangstudy.generalproject.pojo.MyTokenAuthentication;
 import cn.xiangstudy.generalproject.pojo.entity.SysLog;
 import cn.xiangstudy.generalproject.pojo.entity.SysToken;
 import cn.xiangstudy.generalproject.utils.NetworkUtils;
@@ -10,6 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;

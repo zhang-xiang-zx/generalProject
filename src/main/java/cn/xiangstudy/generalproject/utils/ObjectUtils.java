@@ -1,7 +1,9 @@
 package cn.xiangstudy.generalproject.utils;
 
+import cn.xiangstudy.generalproject.config.annotation.FieldValueNotNull;
 import cn.xiangstudy.generalproject.pojo.entity.SysRole;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,6 +11,7 @@ import java.util.List;
 
 /**
  * 对象处理类
+ *
  * @author zhangxiang
  * @date 2025-08-27 17:37
  */
@@ -16,14 +19,15 @@ public class ObjectUtils {
 
     /**
      * 克隆对象属性
-     * @author zhangxiang
-     * @date 2025/8/28 09:03
+     *
      * @param source
      * @param target
+     * @author zhangxiang
+     * @date 2025/8/28 09:03
      */
     public static void cloneProperties(Object source, Object target) {
 
-        if(source == null || target == null) {
+        if (source == null || target == null) {
             throw new NullPointerException("source or target are null");
         }
 
@@ -33,22 +37,22 @@ public class ObjectUtils {
 //        Field[] sourceFields = sourceClass.getDeclaredFields();
         List<Field> sourceFields = getAllFields(sourceClass);
 
-        for(Field sourceField : sourceFields) {
+        for (Field sourceField : sourceFields) {
 
-            try{
+            try {
                 Field targetField = null;
-                try{
+                try {
 //                    targetField = targetClass.getDeclaredField(sourceField.getName());
                     targetField = findField(targetClass, sourceField.getName());
-                    if(targetField == null){
+                    if (targetField == null) {
                         continue;
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     continue;
                 }
 
                 // 检查类型
-                if(!sourceField.getType().equals(targetField.getType())) {
+                if (!sourceField.getType().equals(targetField.getType())) {
                     continue;
                 }
 
@@ -58,7 +62,7 @@ public class ObjectUtils {
                 Object value = sourceField.get(source);
                 targetField.set(target, value);
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -67,15 +71,16 @@ public class ObjectUtils {
 
     /**
      * 克隆对象属性到指定类型的新对象
-     * @author zhangxiang
-     * @date 2025/8/28 09:17
+     *
      * @param source
      * @param targetClass
      * @return T
+     * @author zhangxiang
+     * @date 2025/8/28 09:17
      */
     public static <T> T cloneProperties(Object source, Class<T> targetClass) {
 
-        if(source == null || targetClass == null) {
+        if (source == null || targetClass == null) {
             throw new NullPointerException("source or target are null");
         }
 
@@ -83,7 +88,7 @@ public class ObjectUtils {
             T target = targetClass.getDeclaredConstructor().newInstance();
             cloneProperties(source, target);
             return target;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -92,10 +97,11 @@ public class ObjectUtils {
 
     /**
      * 获取对象所有字段, 包括继承类中的字段
-     * @author zhangxiang
-     * @date 2025/8/28 09:56
+     *
      * @param clazz
      * @return java.util.List<java.lang.reflect.Field>
+     * @author zhangxiang
+     * @date 2025/8/28 09:56
      */
     public static List<Field> getAllFields(Class<?> clazz) {
         List<Field> fields = new ArrayList<>();
@@ -103,7 +109,7 @@ public class ObjectUtils {
 
             Field[] declaredFields = clazz.getDeclaredFields();
 
-            for(Field field : declaredFields) {
+            for (Field field : declaredFields) {
                 fields.add(field);
             }
 
@@ -114,18 +120,19 @@ public class ObjectUtils {
 
     /**
      * 在类及其父类中查找字段
-     * @author zhangxiang
-     * @date 2025/8/28 10:06
+     *
      * @param clazz
      * @param fieldName
      * @return java.lang.reflect.Field
+     * @author zhangxiang
+     * @date 2025/8/28 10:06
      */
     public static Field findField(Class<?> clazz, String fieldName) {
 
         while (clazz != null && clazz != Object.class) {
-            try{
+            try {
                 return clazz.getDeclaredField(fieldName);
-            }catch (Exception e){
+            } catch (Exception e) {
                 clazz = clazz.getSuperclass();
             }
         }
@@ -133,17 +140,81 @@ public class ObjectUtils {
         return null;
     }
 
-    public static void main(String[] args) {
-        SysRole admin = SysRole.builder().roleName("admin").createTime(new Date()).build();
+    /**
+     * 判断对象中是否都为空
+     *
+     * @param object
+     * @return boolean
+     * @author zhangxiang
+     * @date 2025/8/28 15:03
+     */
+    public static boolean isAllNull(Object object) {
+        boolean flag = true;
 
-        SysRole sysRole = cloneProperties(admin, SysRole.class);
-        System.out.println(sysRole.toString());
-        System.out.println(sysRole.getCreateTime());
+        if (object == null) {
+            throw new NullPointerException("object is null");
+        }
 
-//        List<Field> allFields = getAllFields(admin.getClass());
-//        allFields.forEach(field -> {
-//            System.out.println(field.getName());
-//        });
+        Class<?> aClass = object.getClass();
 
+        Field[] declaredFields = aClass.getDeclaredFields();
+
+        for (Field field : declaredFields) {
+            try {
+                field.setAccessible(true);
+                Object o = field.get(object);
+
+                if (o != null) {
+                    flag = false;
+                    break;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return flag;
     }
+
+
+    /**
+     * 判断对象中带有不为空注解的字段是否有值, 有一个为空就为true, 都不为空就是false
+     *
+     * @param obj
+     * @return boolean
+     * @author zhangxiang
+     * @date 2025/8/28 15:19
+     */
+    public static boolean isAnnotationNull(Object obj) {
+        boolean flag = false;
+
+        if (obj == null) {
+            throw new NullPointerException("obj is null");
+        }
+
+        Class<?> aClass = obj.getClass();
+
+        Field[] declaredFields = aClass.getDeclaredFields();
+        for (Field field : declaredFields) {
+            Annotation[] annotations = field.getAnnotations();
+            for (Annotation annotation : annotations) {
+                if (annotation instanceof FieldValueNotNull) {
+                    System.out.println(field.getName());
+                    field.setAccessible(true);
+                    try {
+                        Object value = field.get(obj);
+                        if (value == null) {
+                            flag = true;
+                            break;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        return flag;
+    }
+
 }
