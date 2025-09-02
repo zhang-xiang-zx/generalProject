@@ -1,12 +1,12 @@
 package cn.xiangstudy.generalproject.utils;
 
 import cn.xiangstudy.generalproject.config.annotation.FieldValueNotNull;
-import cn.xiangstudy.generalproject.pojo.entity.SysRole;
+import cn.xiangstudy.generalproject.config.annotation.UpdateFieldIsNull;
+import cn.xiangstudy.generalproject.pojo.dto.UpdateRoleDTO;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -217,4 +217,77 @@ public class ObjectUtils {
         return flag;
     }
 
+    /**
+     * 判断修改对象中, 需要修改的字段是否都为空, 其中ID条件一定不能为空
+     * @author zhangxiang
+     * @date 2025/8/28 15:43
+     * @param obj
+     * @return boolean true: 传来的字段都为空, false: 不都为空
+     */
+    public static boolean isUpdateObjectNull(Object obj) {
+        boolean flag = false;
+        int haveNotNullFieldNum = 0;
+        int isNull = 0;
+
+        if (obj == null) {
+            throw new NullPointerException("obj is null");
+        }
+
+        Class<?> aClass = obj.getClass();
+
+        Field[] declaredFields = aClass.getDeclaredFields();
+
+        for (Field field : declaredFields) {
+
+            Annotation[] annotations = field.getAnnotations();
+            for (Annotation annotation : annotations) {
+
+                // 修改对象中 ID 是一定要传的, 没有直接判空
+                if(annotation instanceof FieldValueNotNull){
+                    field.setAccessible(true);
+                    try {
+                        Object id = field.get(obj);
+                        if(id == null){
+                            flag = true;
+                            break;
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+
+                if(annotation instanceof UpdateFieldIsNull){
+                    haveNotNullFieldNum++;
+                    field.setAccessible(true);
+                    try{
+                        Object value = field.get(obj);
+                        if(value == null){
+                            isNull++;
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        // 判断拥有的注解是否都为空
+        if(haveNotNullFieldNum == isNull){
+            flag = true;
+        }
+
+        return flag;
+    }
+
+    public static void main(String[] args) {
+
+        UpdateRoleDTO updateRoleDTO = new UpdateRoleDTO();
+        updateRoleDTO.setRoleId(2L);
+        updateRoleDTO.setRoleName("admin");
+        updateRoleDTO.setRoleKey("sd");
+
+        boolean updateObjectNull = isUpdateObjectNull(updateRoleDTO);
+
+        System.out.println(updateObjectNull);
+    }
 }

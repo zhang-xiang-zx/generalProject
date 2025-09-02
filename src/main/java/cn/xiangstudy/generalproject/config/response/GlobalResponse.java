@@ -1,6 +1,8 @@
 package cn.xiangstudy.generalproject.config.response;
 
 import cn.xiangstudy.generalproject.config.constant.SysConst;
+import cn.xiangstudy.generalproject.config.threadLocal.ContextKeys;
+import cn.xiangstudy.generalproject.config.threadLocal.ContextManager;
 import cn.xiangstudy.generalproject.pojo.LogContext;
 import cn.xiangstudy.generalproject.pojo.entity.SysLog;
 import cn.xiangstudy.generalproject.service.SysLogService;
@@ -49,16 +51,26 @@ public class GlobalResponse implements ResponseBodyAdvice<Object> {
         log.info("自定义异常：{}", e.getMessage());
 
         // 获取日志信息
-        SysLog sysLog = LogContext.get();
+        SysLog sysLog = ContextManager.get(ContextKeys.SYS_LOG);
         if (sysLog != null) {
             sysLog.setIsSuccess(SysConst.LOG_REQUEST_ERROR);
             sysLog.setErrorMsg(e.getMessage());
 
             //添加日志
             sysLogService.createLog(sysLog);
-
-            LogContext.remove();
         }
+        // 最终清空所有
+        ContextManager.clear();
+//        SysLog sysLog = LogContext.get();
+//        if (sysLog != null) {
+//            sysLog.setIsSuccess(SysConst.LOG_REQUEST_ERROR);
+//            sysLog.setErrorMsg(e.getMessage());
+//
+//            //添加日志
+//            sysLogService.createLog(sysLog);
+//
+//            LogContext.remove();
+//        }
 
         return Result.fail(e.getCode(), e.getMessage());
     }
@@ -67,17 +79,27 @@ public class GlobalResponse implements ResponseBodyAdvice<Object> {
     public Result<Void> exception(Exception e) {
         log.info("系统异常：{}", e.getMessage());
 
-        // 获取日志信息
-        SysLog sysLog = LogContext.get();
+        SysLog sysLog = ContextManager.get(ContextKeys.SYS_LOG);
         if (sysLog != null) {
             sysLog.setIsSuccess(SysConst.LOG_REQUEST_ERROR);
             sysLog.setErrorMsg(e.getMessage());
 
             //添加日志
             sysLogService.createLog(sysLog);
-
-            LogContext.remove();
         }
+        // 最终清空所有
+        ContextManager.clear();
+        // 获取日志信息
+//        SysLog sysLog = LogContext.get();
+//        if (sysLog != null) {
+//            sysLog.setIsSuccess(SysConst.LOG_REQUEST_ERROR);
+//            sysLog.setErrorMsg(e.getMessage());
+//
+//            //添加日志
+//            sysLogService.createLog(sysLog);
+//
+//            LogContext.remove();
+//        }
 
         return Result.fail(500, "系统异常");
     }
@@ -101,7 +123,7 @@ public class GlobalResponse implements ResponseBodyAdvice<Object> {
             isNeedProcess = false;
         }
 
-        if(returnType.getParameterType().equals(Result.class)){
+        if (returnType.getParameterType().equals(Result.class)) {
             isNeedProcess = false;
         }
 
@@ -113,7 +135,7 @@ public class GlobalResponse implements ResponseBodyAdvice<Object> {
         }
 
         // 获取日志信息
-        SysLog sysLog = LogContext.get();
+        SysLog sysLog = ContextManager.get(ContextKeys.SYS_LOG);
         if (sysLog != null) {
             sysLog.setIsSuccess(SysConst.LOG_REQUEST_SUCCESS);
 
@@ -122,6 +144,17 @@ public class GlobalResponse implements ResponseBodyAdvice<Object> {
 
             LogContext.remove();
         }
+        // 最终清空所有
+        ContextManager.clear();
+//        SysLog sysLog = LogContext.get();
+//        if (sysLog != null) {
+//            sysLog.setIsSuccess(SysConst.LOG_REQUEST_SUCCESS);
+//
+//            //添加日志
+//            sysLogService.createLog(sysLog);
+//
+//            LogContext.remove();
+//        }
 
         return isNeedProcess;
     }

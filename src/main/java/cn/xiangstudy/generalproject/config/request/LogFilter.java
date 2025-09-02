@@ -1,5 +1,7 @@
 package cn.xiangstudy.generalproject.config.request;
 
+import cn.xiangstudy.generalproject.config.threadLocal.ContextKeys;
+import cn.xiangstudy.generalproject.config.threadLocal.ContextManager;
 import cn.xiangstudy.generalproject.pojo.LogContext;
 import cn.xiangstudy.generalproject.pojo.MyTokenAuthentication;
 import cn.xiangstudy.generalproject.pojo.entity.SysLog;
@@ -57,7 +59,8 @@ public class LogFilter extends OncePerRequestFilter {
                 .build();
 
         //日志存放在上下文中
-        LogContext.set(logInfo);
+//        LogContext.set(logInfo);
+        ContextManager.set(ContextKeys.SYS_LOG, logInfo);
 
         // 登录时存储客户端请求IP，方便登录成功记录
         if(request.getRequestURI().contains("/login")){
