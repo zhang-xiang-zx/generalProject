@@ -20,5 +20,15 @@
         where role_id = #{roleId}
     </update>
 
+    <select id="selectRoleListByKeyword" resultType="sysRole">
+        select role_id, role_name, role_key, del_flag, create_time, remark
+        from sys_role
+        <where>
+            <if test="keyword != null and keyword != ''">
+                role_name like concat('%',#{keyword},'%') or role_key like concat('%',#{keyword},'%')
+            </if>
+        </where>
+    </select>
+
 
 </mapper>

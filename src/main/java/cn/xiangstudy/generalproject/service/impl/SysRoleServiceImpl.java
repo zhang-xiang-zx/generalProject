@@ -2,13 +2,18 @@ package cn.xiangstudy.generalproject.service.impl;
 
 import cn.xiangstudy.generalproject.config.constant.SysConst;
 import cn.xiangstudy.generalproject.mapper.SysRoleMapper;
+import cn.xiangstudy.generalproject.pojo.dto.PageDTO;
 import cn.xiangstudy.generalproject.pojo.dto.RoleDTO;
+import cn.xiangstudy.generalproject.pojo.dto.UpdateRoleDTO;
 import cn.xiangstudy.generalproject.pojo.entity.SysRole;
+import cn.xiangstudy.generalproject.pojo.utils.PageInfo;
 import cn.xiangstudy.generalproject.service.SysRoleService;
 import cn.xiangstudy.generalproject.utils.ObjectUtils;
+import cn.xiangstudy.generalproject.utils.PageHelper;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author zhangxiang
@@ -34,12 +39,31 @@ public class SysRoleServiceImpl implements SysRoleService {
     }
 
     @Override
-    public void updateRole(RoleDTO roleDTO) {
+    public void updateRole(UpdateRoleDTO roleDTO) {
 
         // 判断不能全为空
+        if(!ObjectUtils.isUpdateObjectNull(roleDTO)){
+            SysRole sysRole = ObjectUtils.cloneProperties(roleDTO, SysRole.class);
+            mapper.updateRole(sysRole);
+        }
 
+    }
 
-        SysRole sysRole = ObjectUtils.cloneProperties(roleDTO, SysRole.class);
-        mapper.updateRole(sysRole);
+    @Override
+    public PageInfo<SysRole> selectRoleListByKeyword(String keyword, PageDTO pageDTO) {
+
+        // 分页
+        PageHelper.startPage(pageDTO.getPageNum(), pageDTO.getPageSize());
+
+        List<SysRole> sysRoles = mapper.selectRoleListByKeyword(keyword);
+
+        PageInfo<SysRole> pageInfo = new PageInfo<>(sysRoles);
+
+        return pageInfo;
+    }
+
+    @Override
+    public void deleteRole(Long[] ids) {
+
     }
 }

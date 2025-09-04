@@ -19,14 +19,14 @@ import java.util.Optional;
 @Schema(description = "分页")
 public class PageDTO {
 
-    @Schema(description = "每页条数", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Integer limit;
+    @Schema(description = "每页大小", requiredMode = Schema.RequiredMode.REQUIRED)
+    private Integer pageSize;
 
-    @Schema(description = "页码", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Integer page;
+    @Schema(description = "当前页", requiredMode = Schema.RequiredMode.REQUIRED)
+    private Integer pageNum;
 
     public void startPage(){
-        limit = Optional.ofNullable(limit).orElse(10);
-        page = Optional.ofNullable(page).orElse(1);
+        pageSize = Optional.ofNullable(pageSize).orElse(10);
+        pageNum = Optional.ofNullable(pageNum).orElse(1);
     }
 }

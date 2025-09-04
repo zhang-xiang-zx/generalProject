@@ -43,8 +43,8 @@ public class ContextManager {
      * @date 2025/9/2 10:27
      * @param key
      */
-    @SuppressWarnings("unchecked")
     public static <T> void remove(ContextKey<T> key) {
+        @SuppressWarnings("unchecked")
         ThreadLocal<T> threadLocal = (ThreadLocal<T>) contextMap.get(key);
         if (threadLocal != null) {
             threadLocal.remove();

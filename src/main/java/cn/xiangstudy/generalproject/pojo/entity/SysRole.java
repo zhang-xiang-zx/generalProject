@@ -19,10 +19,8 @@ public class SysRole extends BaseEntity {
 
     private Long roleId;
 
-    @FieldValueNotNull
     private String roleName;
 
-    @FieldValueNotNull
     private String roleKey;
 
     @Override
