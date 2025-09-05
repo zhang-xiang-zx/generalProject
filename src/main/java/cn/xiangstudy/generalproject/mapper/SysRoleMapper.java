@@ -12,4 +12,10 @@ public interface SysRoleMapper {
     int updateRole(SysRole sysRole);
 
     List<SysRole> selectRoleListByKeyword(@Param("keyword") String keyword);
+
+    int deleteRoleByRoleIds(@Param("roleIds") List<Long> roleIds);
+
+    SysRole selectRoleByRoleKey(@Param("roleKey") String roleKey);
+
+    List<SysRole> selectRoleByRoleIds(@Param("roleIds") List<Long> roleIds);
 }

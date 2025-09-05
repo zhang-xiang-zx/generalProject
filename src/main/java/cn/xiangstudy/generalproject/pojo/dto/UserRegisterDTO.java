@@ -18,12 +18,12 @@ import lombok.experimental.SuperBuilder;
 @Schema(description = "注册")
 public class UserRegisterDTO {
 
-    @Schema(name = "昵称")
+    @Schema(description = "昵称")
     private String nickname;
 
-    @Schema(name = "密码")
+    @Schema(description = "密码")
     private String password;
 
-    @Schema(name = "手机号")
+    @Schema(description = "手机号")
     private String phone;
 }

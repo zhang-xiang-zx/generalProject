@@ -1,5 +1,6 @@
 package cn.xiangstudy.generalproject.mapper;
 
+import cn.xiangstudy.generalproject.pojo.dto.UpdateUserRoleDTO;
 import cn.xiangstudy.generalproject.pojo.entity.User;
 import cn.xiangstudy.generalproject.pojo.vo.UserVO;
 import org.apache.ibatis.annotations.Param;
@@ -31,10 +32,10 @@ public interface UserMapper {
      * @param keyword
      * @return java.util.List<cn.xiangstudy.generalproject.pojo.vo.UserVO>
      */
-    List<UserVO> selectAllUsers(@Param("keyword") String keyword, @Param("status") Integer status);
+    List<UserVO> selectAllUsers(@Param("keyword") String keyword);
 
     /**
-     * 通过手机号码查找
+     * 通过手机号码查找用户
      * @author zhangxiang
      * @date 2025/7/29 16:22
      * @param phone
@@ -43,7 +44,7 @@ public interface UserMapper {
     User selectUserByPhone(@Param("phone") String phone);
 
     /**
-     * 通过昵称查找
+     * 通过昵称查找用户
      * @author zhangxiang
      * @date 2025/7/29 16:32
      * @param nickname
@@ -51,5 +52,20 @@ public interface UserMapper {
      */
     User selectUserByNickname(@Param("nickname") String nickname);
 
+    /**
+     * 通过账号查找用户
+     * @author zhangxiang
+     * @date 2025/9/5 14:43
+     * @param account
+     * @return cn.xiangstudy.generalproject.pojo.entity.User
+     */
     User selectUserLogin(@Param("account") String account);
+
+    /**
+     * 修改用户角色
+     * @author zhangxiang
+     * @date 2025/9/5 14:48
+     * @param updateDto
+     */
+    void updateUserRole(@Param("dto") UpdateUserRoleDTO updateDto);
 }

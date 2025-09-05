@@ -4,20 +4,22 @@ import cn.xiangstudy.generalproject.component.user.UserAccountPool;
 import cn.xiangstudy.generalproject.config.constant.SysConst;
 import cn.xiangstudy.generalproject.config.response.BusinessException;
 import cn.xiangstudy.generalproject.mapper.UserMapper;
-import cn.xiangstudy.generalproject.pojo.MyTokenAuthentication;
 import cn.xiangstudy.generalproject.pojo.dto.UserLoginDTO;
 import cn.xiangstudy.generalproject.pojo.dto.UserRegisterDTO;
+import cn.xiangstudy.generalproject.pojo.dto.UserRoleDTO;
 import cn.xiangstudy.generalproject.pojo.entity.SysLoginLog;
+import cn.xiangstudy.generalproject.pojo.entity.SysRole;
 import cn.xiangstudy.generalproject.pojo.entity.SysToken;
 import cn.xiangstudy.generalproject.pojo.entity.User;
 import cn.xiangstudy.generalproject.service.SysLoginLogService;
+import cn.xiangstudy.generalproject.service.SysRoleService;
+import cn.xiangstudy.generalproject.service.SysUserRoleService;
 import cn.xiangstudy.generalproject.service.UserOperationService;
 import cn.xiangstudy.generalproject.utils.DateUtils;
 import cn.xiangstudy.generalproject.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -40,11 +42,18 @@ public class UserOperationServiceImpl implements UserOperationService {
 
     private final SysLoginLogService sysLoginLogService;
 
+    private final SysUserRoleService sysUserRoleService;
+
+    private final SysRoleService sysRoleService;
+
     @Autowired
-    public UserOperationServiceImpl(UserAccountPool userAccountPool, UserMapper userMapper, SysLoginLogService sysLoginLogService) {
+    public UserOperationServiceImpl(UserAccountPool userAccountPool, UserMapper userMapper,
+                                    SysLoginLogService sysLoginLogService, SysUserRoleService sysUserRoleService, SysRoleService sysRoleService) {
         this.userAccountPool = userAccountPool;
         this.userMapper = userMapper;
         this.sysLoginLogService = sysLoginLogService;
+        this.sysUserRoleService = sysUserRoleService;
+        this.sysRoleService = sysRoleService;
     }
 
     @Override
@@ -89,6 +98,19 @@ public class UserOperationServiceImpl implements UserOperationService {
                 .build();
 
         userMapper.createUser(userInfo);
+
+        // 查找普通角色ID
+        SysRole sysRole = sysRoleService.selectRoleByRoleKey(SysConst.USER_ROLE);
+
+        // 赋予普通用户角色
+        if(sysRole != null) {
+            UserRoleDTO roleInfo = UserRoleDTO.builder()
+                    .userId(userInfo.getUserId())
+                    .roleId(sysRole.getRoleId())
+                    .build();
+            sysUserRoleService.createUserRole(roleInfo);
+        }
+
     }
 
     @Override

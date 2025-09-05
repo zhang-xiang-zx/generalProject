@@ -2,6 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.xiangstudy.generalproject.mapper.SysRoleMapper">
 
+    <sql id="selectAll">
+        select role_id, role_name, role_key, del_flag, create_time, remark
+        from sys_role
+    </sql>
+
     <insert id="createRole">
         insert into sys_role (role_name, role_key, del_flag, create_time, remark)
         values (#{roleName}, #{roleKey}, #{delFlag}, #{createTime}, #{remark})
@@ -30,5 +35,26 @@
         </where>
     </select>
 
+    <delete id="deleteRoleByRoleIds">
+        delete from  sys_role where role_id in
+        <foreach collection="roleIds" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="selectRoleByRoleKey" resultType="sysRole">
+        <include refid="selectAll"/>
+        where role_key = #{roleKey}
+    </select>
+
+    <select id="selectRoleByRoleIds" resultType="sysRole">
+        <include refid="selectAll"/>
+        <where>
+            role_id in
+            <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+                #{roleId}
+            </foreach>
+        </where>
+    </select>
 
 </mapper>

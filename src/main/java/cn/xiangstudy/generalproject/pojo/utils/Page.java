@@ -49,10 +49,12 @@ public class Page<E> extends ArrayList<E> {
         return hasNextPage;
     }
 
-    public static <E> Page<E> of(List<E> list, int pageNum, int pageSize, long total) {
+    public static <E> Page<E> of(List<E> list, int pageNum, int pageSize, long total, boolean hasNextPage) {
         Page<E> page = new Page(pageNum, pageSize);
         page.addAll(list);
         page.setTotal(total);
+        page.setHasNextPage(hasNextPage);
         return page;
     }
+
 }

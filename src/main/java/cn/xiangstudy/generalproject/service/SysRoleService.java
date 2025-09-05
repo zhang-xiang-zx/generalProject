@@ -41,5 +41,23 @@ public interface SysRoleService {
      * @date 2025/9/2 15:46
      * @param ids
      */
-    void deleteRole(Long[] ids);
+    void deleteRole(List<Long> ids);
+
+    /**
+     * 根据key寻找角色
+     * @author zhangxiang
+     * @date 2025/9/4 16:26
+     * @param roleKey
+     * @return cn.xiangstudy.generalproject.pojo.entity.SysRole
+     */
+    SysRole selectRoleByRoleKey(String roleKey);
+
+    /**
+     * 根据角色ID查找角色
+     * @author zhangxiang
+     * @date 2025/9/5 15:17
+     * @param roleIds
+     * @return java.util.List<cn.xiangstudy.generalproject.pojo.entity.SysRole>
+     */
+    List<SysRole> selectRoleByRoleIds(List<Long> roleIds);
 }

@@ -279,15 +279,4 @@ public class ObjectUtils {
         return flag;
     }
 
-    public static void main(String[] args) {
-
-        UpdateRoleDTO updateRoleDTO = new UpdateRoleDTO();
-        updateRoleDTO.setRoleId(2L);
-        updateRoleDTO.setRoleName("admin");
-        updateRoleDTO.setRoleKey("sd");
-
-        boolean updateObjectNull = isUpdateObjectNull(updateRoleDTO);
-
-        System.out.println(updateObjectNull);
-    }
 }

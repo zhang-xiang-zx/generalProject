@@ -46,4 +46,14 @@ public class SysConst {
      * 日志请求接口失败
      */
     public static final int LOG_REQUEST_ERROR = 0;
+
+    /**
+     * 角色key: 普通角色
+     */
+    public static final String USER_ROLE = "UserRole";
+
+    /**
+     * 角色key: 管理员角色
+     */
+    public static final String ADMIN_ROLE = "AdminRole";
 }

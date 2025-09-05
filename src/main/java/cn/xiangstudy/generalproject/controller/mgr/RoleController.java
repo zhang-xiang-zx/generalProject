@@ -50,8 +50,8 @@ public class RoleController {
     }
 
     @PostMapping("delete")
-    @Operation(summary = "删除")
-    public void deleteRole(Long[] roleIds){
-
+    @Operation(summary = "删除角色")
+    public void deleteRole(@RequestBody List<Long> roleIds){
+        service.deleteRole(roleIds);
     }
 }

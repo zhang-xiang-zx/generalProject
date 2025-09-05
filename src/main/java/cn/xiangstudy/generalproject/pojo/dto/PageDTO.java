@@ -2,6 +2,7 @@ package cn.xiangstudy.generalproject.pojo.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -19,11 +20,13 @@ import java.util.Optional;
 @Schema(description = "分页")
 public class PageDTO {
 
+    @Builder.Default
     @Schema(description = "每页大小", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Integer pageSize;
+    private Integer pageSize = 10;
 
+    @Builder.Default
     @Schema(description = "当前页", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Integer pageNum;
+    private Integer pageNum = 1;
 
     public void startPage(){
         pageSize = Optional.ofNullable(pageSize).orElse(10);

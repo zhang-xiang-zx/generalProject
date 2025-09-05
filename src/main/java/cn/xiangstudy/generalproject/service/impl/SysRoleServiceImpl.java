@@ -8,10 +8,12 @@ import cn.xiangstudy.generalproject.pojo.dto.UpdateRoleDTO;
 import cn.xiangstudy.generalproject.pojo.entity.SysRole;
 import cn.xiangstudy.generalproject.pojo.utils.PageInfo;
 import cn.xiangstudy.generalproject.service.SysRoleService;
+import cn.xiangstudy.generalproject.utils.ListUtils;
 import cn.xiangstudy.generalproject.utils.ObjectUtils;
 import cn.xiangstudy.generalproject.utils.PageHelper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -63,7 +65,31 @@ public class SysRoleServiceImpl implements SysRoleService {
     }
 
     @Override
-    public void deleteRole(Long[] ids) {
+    public void deleteRole(List<Long> ids) {
 
+        if(!ListUtils.isEmpty(ids)){
+            mapper.deleteRoleByRoleIds(ids);
+        }
+
+    }
+
+    @Override
+    public SysRole selectRoleByRoleKey(String roleKey) {
+        SysRole roleInfo = null;
+        if (roleKey != null){
+            roleInfo = mapper.selectRoleByRoleKey(roleKey);
+        }
+        return roleInfo;
+    }
+
+    @Override
+    public List<SysRole> selectRoleByRoleIds(List<Long> roleIds) {
+        List<SysRole> result = new ArrayList<>();
+
+        if(!ListUtils.isEmpty(roleIds)){
+            result = mapper.selectRoleByRoleIds(roleIds);
+        }
+
+        return result;
     }
 }

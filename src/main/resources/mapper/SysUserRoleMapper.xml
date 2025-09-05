@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.xiangstudy.generalproject.mapper.SysUserRoleMapper">
+
+    <sql id="selectAll">
+        select user_role_id, user_id, role_id, create_time, remark from sys_user_role
+    </sql>
+
+    <insert id="createUserRole" parameterType="sysUserRole">
+        insert into sys_user_role (user_role_id, user_id, role_id, del_flag, create_time, remark)
+        values (#{userRoleId}, #{userId}, #{roleId}, #{delFlag}, #{createTime}, #{remark})
+    </insert>
+
+    <delete id="deleteUserRole">
+        delete from sys_user_role
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="userRoleId != null">
+                and user_role_id = #{userRoleId}
+            </if>
+        </where>
+    </delete>
+
+    <select id="selectUserRoleByUserIds" resultType="sysUserRole">
+        <include refid="selectAll"/>
+        <where>
+            user_id in
+            <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+                #{userId}
+            </foreach>
+        </where>
+    </select>
+</mapper>

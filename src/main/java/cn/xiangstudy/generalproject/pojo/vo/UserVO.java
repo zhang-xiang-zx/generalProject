@@ -17,27 +17,33 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-@Schema(name = "用户信息")
+@Schema(description = "用户信息")
 public class UserVO {
 
-    @Schema(name = "Id")
+    @Schema(description = "Id")
     private Long userId;
 
-    @Schema(name = "昵称")
+    @Schema(description = "昵称")
     private String nickname;
 
-    @Schema(name = "账号")
+    @Schema(description = "账号")
     private String account;
 
-    @Schema(name = "手机号")
+    @Schema(description = "手机号")
     private String phone;
 
-    @Schema(name = "状态")
+    @Schema(description = "状态")
     private Integer status;
 
-    @Schema(name = "创建时间")
+    @Schema(description = "角色")
+    private String roleName;
+
+    @Schema(description = "角色Key")
+    private String roleKey;
+
+    @Schema(description = "创建时间")
     private Date createTime;
 
-    @Schema(name = "备注")
+    @Schema(description = "备注")
     private String remark;
 }
