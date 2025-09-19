@@ -1,5 +1,6 @@
 package cn.xiangstudy.generalproject.service.impl;
 
+import cn.xiangstudy.generalproject.config.annotation.RequestRole;
 import cn.xiangstudy.generalproject.config.constant.SysConst;
 import cn.xiangstudy.generalproject.mapper.SysRoleMapper;
 import cn.xiangstudy.generalproject.pojo.dto.PageDTO;
@@ -40,11 +41,13 @@ public class SysRoleServiceImpl implements SysRoleService {
         mapper.createRole(sysRole);
     }
 
+    @RequestRole({"AdminRole"})
     @Override
     public void updateRole(UpdateRoleDTO roleDTO) {
 
         // 判断不能全为空
         if(!ObjectUtils.isUpdateObjectNull(roleDTO)){
+
             SysRole sysRole = ObjectUtils.cloneProperties(roleDTO, SysRole.class);
             mapper.updateRole(sysRole);
         }

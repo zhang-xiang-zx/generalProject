@@ -1,5 +1,6 @@
 package cn.xiangstudy.generalproject.mapper;
 
+import cn.xiangstudy.generalproject.pojo.dto.UpdatePasswordDTO;
 import cn.xiangstudy.generalproject.pojo.dto.UpdateUserRoleDTO;
 import cn.xiangstudy.generalproject.pojo.entity.User;
 import cn.xiangstudy.generalproject.pojo.vo.UserVO;
@@ -68,4 +69,12 @@ public interface UserMapper {
      * @param updateDto
      */
     void updateUserRole(@Param("dto") UpdateUserRoleDTO updateDto);
+
+    /**
+     * 修改用户密码
+     * @author zhangxiang
+     * @date 2025/9/8 16:41
+     * @param updateDto
+     */
+    void updateUserPassword(@Param("dto") UpdatePasswordDTO updateDto);
 }

@@ -47,4 +47,8 @@
     <update id="updateUserRole">
         update sys_user_role set role_id = #{dto.roleId} where user_id = #{dto.userId}
     </update>
+
+    <update id="updateUserPassword">
+        update sys_user set password = #{dto.password} where phone = #{dto.phone}
+    </update>
 </mapper>

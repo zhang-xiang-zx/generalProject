@@ -1,5 +1,6 @@
 package cn.xiangstudy.generalproject.service.impl;
 
+import cn.xiangstudy.generalproject.config.annotation.RequestRole;
 import cn.xiangstudy.generalproject.config.response.BusinessException;
 import cn.xiangstudy.generalproject.mapper.UserMapper;
 import cn.xiangstudy.generalproject.pojo.dto.PageDTO;
@@ -76,6 +77,7 @@ public class UserServiceImpl implements UserService {
         return PageHelper.edit(oldPageInfo, collect);
     }
 
+    @RequestRole({"AdminRole"})
     @Override
     public void updateUserRole(UpdateUserRoleDTO dto) {
 

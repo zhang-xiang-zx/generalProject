@@ -13,7 +13,7 @@
     </insert>
 
     <update id="updateRole">
-        update sys_role set
+        update sys_role
         <set>
             <if test="roleName != null and roleName != ''">
                 role_name = #{roleName},

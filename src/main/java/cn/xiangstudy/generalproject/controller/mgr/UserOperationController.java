@@ -1,5 +1,6 @@
 package cn.xiangstudy.generalproject.controller.mgr;
 
+import cn.xiangstudy.generalproject.pojo.dto.UpdatePasswordDTO;
 import cn.xiangstudy.generalproject.pojo.dto.UserLoginDTO;
 import cn.xiangstudy.generalproject.pojo.dto.UserRegisterDTO;
 import cn.xiangstudy.generalproject.service.UserOperationService;
@@ -34,5 +35,11 @@ public class UserOperationController {
     @Operation(summary = "登录")
     public String login(@RequestBody UserLoginDTO dto){
         return service.login(dto);
+    }
+
+    @PostMapping("forgotPassword")
+    @Operation(summary = "忘记密码")
+    public void forgotPassword(@RequestBody UpdatePasswordDTO dto){
+        service.forgotPassword(dto);
     }
 }

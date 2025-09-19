@@ -13,4 +13,6 @@ public interface SysUserRoleMapper {
                        @Param("userRoleId") Long userRoleId);
 
     List<SysUserRole> selectUserRoleByUserIds(@Param("userIds") List<Long> userIds);
+
+    List<SysUserRole> selectUserRoleByUserId(@Param("userId") Long userId);
 }

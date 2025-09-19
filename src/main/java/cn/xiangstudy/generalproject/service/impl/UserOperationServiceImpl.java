@@ -4,6 +4,7 @@ import cn.xiangstudy.generalproject.component.user.UserAccountPool;
 import cn.xiangstudy.generalproject.config.constant.SysConst;
 import cn.xiangstudy.generalproject.config.response.BusinessException;
 import cn.xiangstudy.generalproject.mapper.UserMapper;
+import cn.xiangstudy.generalproject.pojo.dto.UpdatePasswordDTO;
 import cn.xiangstudy.generalproject.pojo.dto.UserLoginDTO;
 import cn.xiangstudy.generalproject.pojo.dto.UserRegisterDTO;
 import cn.xiangstudy.generalproject.pojo.dto.UserRoleDTO;
@@ -16,6 +17,7 @@ import cn.xiangstudy.generalproject.service.SysRoleService;
 import cn.xiangstudy.generalproject.service.SysUserRoleService;
 import cn.xiangstudy.generalproject.service.UserOperationService;
 import cn.xiangstudy.generalproject.utils.DateUtils;
+import cn.xiangstudy.generalproject.utils.ObjectUtils;
 import cn.xiangstudy.generalproject.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -157,5 +159,31 @@ public class UserOperationServiceImpl implements UserOperationService {
         sysLoginLogService.createUserLoginLog(loginLogInfo);
 
         return StringUtils.encodeToken(token);
+    }
+
+    @Override
+    public void forgotPassword(UpdatePasswordDTO dto) {
+
+        boolean annotationNull = ObjectUtils.isAnnotationNull(dto);
+        if(annotationNull){
+            throw new BusinessException(500, "参数不足");
+        }
+        String password = dto.getPassword();
+
+        if (!StringUtils.checkPassword(password)) {
+            throw new BusinessException(500, "格式不支持");
+        }
+
+        String slatStr = StringUtils.randomSlatStr(SysConst.PASSWORD_SLAT_NUM);
+
+        String alreadyPassword = slatStr + password;
+
+        String encodePassword = StringUtils.encodeMD5(alreadyPassword);
+
+        String newPassword = encodePassword + slatStr;
+
+        dto.setPassword(newPassword);
+
+        userMapper.updateUserPassword(dto);
     }
 }

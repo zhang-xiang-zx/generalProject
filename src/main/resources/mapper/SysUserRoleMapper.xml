@@ -32,4 +32,8 @@
             </foreach>
         </where>
     </select>
+
+    <select id="selectUserRoleByUserId" resultType="sysUserRole">
+        <include refid="selectAll"/> where user_id = #{userId}
+    </select>
 </mapper>
